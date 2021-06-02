@@ -9,8 +9,13 @@ The parameters are :
 - v,c,y,delta described in the Model
 - N the number of individuals
 - T the number of occurence of the main Poisson Process
-- Wealth_Strengh is a boolean. When it is True, the program simulates the Model when wealth is strengh (see Section ...).
+- Wealth_Strength is a boolean. When it is True, the program simulates the Model when wealth is strengh (see Section ...).
 - lamda is the lambda used in Section Wealth is Strengh. (lambda is already used in Native Python)
+
+The class Individual represents an individual: 
+ 
+
+
 
 The program needs to run the following libraries : random, matplotlib, numpy.
 
