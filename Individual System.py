@@ -1,14 +1,14 @@
 import random as rd
 import matplotlib.pyplot as plt
 import numpy as np
-v = 2
-c = 4
-y = 8
+v = 20
+c = 40
+y = 100
 delta = 0.1  #Delta
 N = 10000
 T = 1000000
 lamda = 1
-Wealth_Strengh = False
+Wealth_Strengh = True
 
 
 class Individual:
@@ -18,15 +18,15 @@ class Individual:
         self.pH = v/c
     def ProbaH(self,signal):
         global Wealth_Strengh
-        if Wealth_Strengh:
-            self.pH = 1/2 #To be modified with signal
+        if not Wealth_Strengh:
+            self.pH = 1/2
         else:
             Signal1 = self.w
             Signal2 = signal
-            if abs(Signal1 - Signal2)<np.ln(c/v)/lamda:
+            if abs(Signal1 - Signal2)<np.log(c/v)/lamda:
                 f = np.exp(lamda*Signal1)/(np.exp	(lamda*Signal1) + np.exp(lamda * Signal2))
                 self.pH = v /(2*(v+c)*f-v)
-            elif (Signal1 - Signal2)>np.ln(c/v)/lamda:
+            elif (Signal1 - Signal2)>np.log(c/v)/lamda:
                 self.pH = 1
             else: #Vérifier le else
                 self.pH = 0
@@ -58,7 +58,7 @@ def Jeu(I1,I2):
         I1.w += int(v + y/2)
         I2.w += int(y/2)
     if A1 == 1 and A2 == 1:
-        if rd.random()<1/2:
+        if rd.random()<f:
             I1.w += int(v+ y/2)
             I2.w += int(-c + y/2)
         else:
@@ -99,6 +99,13 @@ HistoWealth = []
 for i in range(max(Wealth) +1):
     HistoWealth.append(Wealth.count(i))
 
-plt.plot(range(max(Wealth)+1),HistoWealth)
-plt.show()
+Mean = np.mean(Wealth)
+Med = np.median(Wealth)
 
+with open("SaveWithStrength.txt","w+") as file:
+    for i in Wealth:
+        file.write(str(i) + ",")
+
+plt.plot(range(max(Wealth)+1),HistoWealth)
+plt.savefig("Wealth Acc Strength.jpg")
+plt.show()
