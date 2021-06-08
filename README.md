@@ -1,1 +1,0 @@
-# Model-of-wealth-Accumulation
