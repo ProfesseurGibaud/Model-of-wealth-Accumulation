@@ -9,7 +9,10 @@ N = 10000
 T = 1000000
 lamda = 1
 Wealth_Strengh = True
-
+alpha = v/delta*(1 - v/c)
+E = alpha + y/delta #Mean of W
+beta = v**2/(2*delta)*(3 - (1 - v/c)**2)
+Var = (alpha + y/delta)**2 + y**2/delta + beta
 
 class Individual:
     def __init__(self):
