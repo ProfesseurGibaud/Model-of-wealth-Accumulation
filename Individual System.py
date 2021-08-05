@@ -1,5 +1,4 @@
 import random as rd
-import matplotlib.pyplot as plt
 import numpy as np
 
 """
@@ -14,10 +13,10 @@ y = 100
 delta = 0.1  # Delta
 N = 10000 # Number of individuals
 T = 10000000 # Number of realisations of the Poisson process 
-lamda = 1
+lamda = 10
 Wealth_Strength = True # True = we simulate if wealth is strength, False we simulate the baseline model 
 rho = 1/10 #Probability of dying with probability delta
-
+Wealth_Strength_mixed = False #True = Player plays H according to the Nash Equilibrium, False = Wealthier player plays H, Poorer plays D.
 
 """
 
@@ -58,19 +57,28 @@ class Individual:
 
         """
     
-        global Wealth_Strength
+        global Wealth_Strength,Wealth_Strength_mixed
         if not Wealth_Strength:
             self.pH = 1/2
         else:
             Signal1 = self.w
             Signal2 = signal
-            if abs(Signal1 - Signal2)<np.log(c/v)/lamda:
-                f = np.exp(lamda*Signal1)/(np.exp	(lamda*Signal1) + np.exp(lamda * Signal2))
-                self.pH = v /(2*(v+c)*f-v)
-            elif (Signal1 - Signal2)>np.log(c/v)/lamda:
-                self.pH = 1
-            else: #Vérifier le else
-                self.pH = 0
+            if Wealth_Strength_mixed:
+                if abs(Signal1 - Signal2)<np.log(c/v)/lamda:
+                    f = np.exp(lamda*Signal1)/(np.exp	(lamda*Signal1) + np.exp(lamda * Signal2))
+                    self.pH = v /(2*(v+c)*f-v)
+                elif (Signal1 - Signal2)>np.log(c/v)/lamda:
+                    self.pH = 1
+                else: 
+                    self.pH = 0
+            else:
+                if Signal1 > Signal2:
+                    self.pH = 1
+                elif Signal1 < Signal2:
+                    self.pH = 0
+                else:
+                    self.pH = v/c
+
     def Depreciation(self,v,c,y,delta,rho):
         """
 
@@ -251,7 +259,7 @@ def Simu(v,c,y,delta,rho,N,T):
     for i in range(T):
         if i%10000==0:
             print(i/10000)
-        Event(Dico,v,c,y,delta)
+        Event(Dico,v,c,y,delta,rho)
     Wealth = [I.w for I in Dico.values()]
     mean = np.mean(Wealth)
     return Wealth,mean
