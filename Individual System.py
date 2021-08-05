@@ -11,11 +11,13 @@ v = 20
 c = 40
 y = 100
 delta = 0.1  # Delta
+rho = 1/10 #Probability of dying with probability delta
 N = 10000 # Number of individuals
 T = 10000000 # Number of realisations of the Poisson process 
-lamda = 10
+
+
+sigma = 10
 Wealth_Strength = True # True = we simulate if wealth is strength, False we simulate the baseline model 
-rho = 1/10 #Probability of dying with probability delta
 Wealth_Strength_mixed = False #True = Player plays H according to the Nash Equilibrium, False = Wealthier player plays H, Poorer plays D.
 
 """
@@ -64,10 +66,10 @@ class Individual:
             Signal1 = self.w
             Signal2 = signal
             if Wealth_Strength_mixed:
-                if abs(Signal1 - Signal2)<np.log(c/v)/lamda:
-                    f = np.exp(lamda*Signal1)/(np.exp	(lamda*Signal1) + np.exp(lamda * Signal2))
+                if abs(Signal1 - Signal2)<np.log(c/v)/sigma:
+                    f = np.exp(sigma*Signal1)/(np.exp	(sigma*Signal1) + np.exp(sigma * Signal2))
                     self.pH = v /(2*(v+c)*f-v)
-                elif (Signal1 - Signal2)>np.log(c/v)/lamda:
+                elif (Signal1 - Signal2)>np.log(c/v)/sigma:
                     self.pH = 1
                 else: 
                     self.pH = 0
@@ -138,7 +140,7 @@ def Jeu(I1,I2,v,c,y,delta):
     Signal1 = I1.w
     Signal2 = I2.w
     if Wealth_Strength:
-        f = (np.exp(lamda*Signal1)/(np.exp	(lamda*Signal1) + np.exp(lamda * Signal2)))
+        f = (np.exp(sigma*Signal1)/(np.exp	(sigma*Signal1) + np.exp(sigma * Signal2)))
     else:
         f = 1/2
     I1.ProbaH(Signal2,v,c,y,delta)
