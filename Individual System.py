@@ -15,9 +15,15 @@ rho = 1/10 #Probability of dying with probability delta
 N = 10000 # Number of individuals
 T = 10000000 # Number of realisations of the Poisson process 
 
+v = 2 
+c = 4 
+delta = 0.005
+y = 10
+T = 100000
+rho = 1
 
 sigma = 10
-Wealth_Strength = True # True = we simulate if wealth is strength, False we simulate the baseline model 
+Wealth_Strength = False # True = we simulate if wealth is strength, False we simulate the baseline model 
 Wealth_Strength_mixed = False #True = Player plays H according to the Nash Equilibrium, False = Wealthier player plays H, Poorer plays D.
 
 """
@@ -265,6 +271,21 @@ def Simu(v,c,y,delta,rho,N,T):
     Wealth = [I.w for I in Dico.values()]
     mean = np.mean(Wealth)
     return Wealth,mean
+
+import pandas as pd
+liste_N = [10*i for i in range(1,1000)]
+W_max = 300000
+dico_wealth_dist = {}
+for N in liste_N:
+    print(N)
+    wealth_individual = Simu(v,c,y,delta,rho,N,T)[0]
+    wealth_dist = [wealth_individual.count(i)/N for i in range(W_max)]
+    if abs(sum(wealth_dist)-1) > 0.2:
+        print("Error",sum(wealth_dist))
+    dico_wealth_dist[N]=wealth_dist
+    df = pd.DataFrame(dico_wealth_dist)
+    df.to_csv("data/wealth_individual.csv",sep = ";",index = False)
+
 
 
 
